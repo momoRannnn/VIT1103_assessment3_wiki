@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI & Generative AI — Wiki Home</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f8f9fc;
+    --surface: #ffffff;
+    --surface-hover: #f1f3f9;
+    --border: rgba(0,0,0,0.07);
+    --border-hover: rgba(0,0,0,0.13);
+    --text: #1a1a2e;
+    --text-dim: #64648c;
+    --accent-1: #6366f1;
+    --accent-2: #8b5cf6;
+    --accent-3: #7c3aed;
+    --glow: rgba(99,102,241,0.08);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.06), 0 2px 4px rgba(0,0,0,0.03);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.04);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── Animated background ── */
+  .bg-grid {
+    position: fixed; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(rgba(99,102,241,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
+  }
+
+  .bg-glow {
+    position: fixed; top: -250px; left: 50%; transform: translateX(-50%);
+    width: 900px; height: 600px; z-index: 0;
+    background: radial-gradient(ellipse, rgba(99,102,241,0.06) 0%, rgba(139,92,246,0.03) 40%, transparent 70%);
+    animation: pulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes pulse {
+    0% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+    100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+  }
+
+  /* ── Layout ── */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 960px; margin: 0 auto; padding: 0 24px;
+  }
+
+  /* ── Hero ── */
+  .hero {
+    text-align: center;
+    padding: 72px 0 44px;
+  }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 16px; border-radius: 100px;
+    background: rgba(99,102,241,0.08);
+    border: 1px solid rgba(99,102,241,0.15);
+    font-size: 13px; font-weight: 500; color: var(--accent-3);
+    margin-bottom: 24px;
+    animation: fadeInDown 0.6s ease-out;
+  }
+  .hero-badge .dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #22c55e;
+    animation: blink 2s ease-in-out infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
+  .hero h1 {
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    color: var(--text);
+    animation: fadeInDown 0.6s ease-out 0.1s both;
+  }
+  .hero h1 .gradient {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed, #a855f7);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    font-size: 17px; color: var(--text-dim);
+    max-width: 600px; margin: 0 auto;
+    animation: fadeInDown 0.6s ease-out 0.2s both;
+  }
+  @keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Section titles ── */
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 2px; color: var(--text-dim);
+    margin-bottom: 24px;
+  }
+  .section-label::after {
+    content: ''; flex: 1; height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  /* ── Nav cards ── */
+  .nav-section { padding: 24px 0 48px; }
+  .nav-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 640px) { .nav-grid { grid-template-columns: 1fr; } }
+
+  .nav-card {
+    position: relative;
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-decoration: none; color: inherit;
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    opacity: 0; transform: translateY(20px);
+    animation: cardIn 0.5s ease-out forwards;
+  }
+  .nav-card:nth-child(1) { animation-delay: 0.15s; }
+  .nav-card:nth-child(2) { animation-delay: 0.25s; }
+  .nav-card:nth-child(3) { animation-delay: 0.35s; }
+  .nav-card:nth-child(4) { animation-delay: 0.45s; }
+  @keyframes cardIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, var(--card-accent) 0%, transparent 60%);
+    opacity: 0; transition: opacity 0.35s;
+  }
+  .nav-card:hover::before { opacity: 1; }
+  .nav-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-inner { position: relative; z-index: 1; }
+  .card-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 16px;
+    background: var(--card-icon-bg, rgba(99,102,241,0.08));
+    border: 1px solid var(--card-icon-border, rgba(99,102,241,0.12));
+  }
+  .card-num {
+    font-size: 11px; font-weight: 700; color: var(--accent-1);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 6px;
+  }
+  .card-title {
+    font-size: 17px; font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .card-desc {
+    font-size: 13.5px; color: var(--text-dim);
+    line-height: 1.55;
+  }
+  .card-arrow {
+    position: absolute; top: 24px; right: 24px;
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(99,102,241,0.06);
+    border: 1px solid rgba(99,102,241,0.1);
+    color: var(--accent-1);
+    transition: all 0.3s;
+    font-size: 15px;
+  }
+  .nav-card:hover .card-arrow {
+    background: var(--accent-1);
+    border-color: var(--accent-1);
+    color: white;
+    transform: translate(2px, -2px);
+  }
+
+  /* ── Team section ── */
+  .team-section { padding: 0 0 48px; }
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 640px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: all 0.3s;
+    box-shadow: var(--shadow-sm);
+  }
+  .team-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .team-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 700; color: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+  .team-name {
+    font-size: 14px; font-weight: 600;
+    margin-bottom: 4px; color: var(--text);
+  }
+  .team-role {
+    font-size: 11.5px; color: var(--text-dim);
+    font-weight: 500;
+  }
+  .team-page {
+    display: inline-block; margin-top: 10px;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px;
+    background: rgba(99,102,241,0.08);
+    color: var(--accent-1);
+    border: 1px solid rgba(99,102,241,0.12);
+  }
+
+  /* ── About / Footer ── */
+  .about-section {
+    padding: 0 0 60px;
+  }
+  .about-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow-sm);
+  }
+  .about-box p {
+    font-size: 14.5px; color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .about-box p:last-child { margin-bottom: 0; }
+  .about-meta {
+    display: flex; flex-wrap: wrap; gap: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+  .meta-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-dim);
+  }
+  .meta-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(99,102,241,0.06);
+    font-size: 14px;
+  }
+
+  /* ── Particle canvas ── */
+  #particles {
+    position: fixed; inset: 0; z-index: 0;
+    pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+<div class="bg-grid"></div>
+<div class="bg-glow"></div>
+
+<div class="container">
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="hero-badge"><span class="dot"></span> VIT1103 Assessment 3 — Group Wiki</div>
+    <h1>
+      <span class="gradient">AI & Generative AI</span><br>
+      Web 2.0/3.0 Emerging Technologies
+    </h1>
+    <p>
+      A comprehensive wiki exploring how Artificial Intelligence and Generative AI
+      are reshaping technology, business, and society in the modern web era.
+    </p>
+  </header>
+
+  <!-- Navigation Cards -->
+  <section class="nav-section">
+    <div class="section-label">Explore Topics</div>
+    <div class="nav-grid">
+
+      <a class="nav-card" onclick="navTo('https://www.notion.so/37311eceab5f81df9a5ade4bb7e8eba3')" style="--card-accent: rgba(99,102,241,0.06); --card-icon-bg: rgba(99,102,241,0.08); --card-icon-border: rgba(99,102,241,0.15);">
+        <div class="card-inner">
+          <div class="card-icon">&#129504;</div>
+          <div class="card-num">Page 01</div>
+          <div class="card-title">What is Generative AI?</div>
+          <div class="card-desc">
+            Overview of AI fundamentals, evolution from traditional to generative models,
+            and core technologies — LLMs, Diffusion Models &amp; Transformers.
+          </div>
+        </div>
+        <div class="card-arrow">&#8599;</div>
+      </a>
+
+      <a class="nav-card" onclick="navTo('https://www.notion.so/37311eceab5f814cb936d336ac580dec')" style="--card-accent: rgba(34,197,94,0.06); --card-icon-bg: rgba(34,197,94,0.08); --card-icon-border: rgba(34,197,94,0.15);">
+        <div class="card-inner">
+          <div class="card-icon">&#128640;</div>
+          <div class="card-num">Page 02</div>
+          <div class="card-title">AI in Action — Applications</div>
+          <div class="card-desc">
+            How AI transforms business, education, healthcare &amp; creative industries
+            with real-world case studies and practical examples.
+          </div>
+        </div>
+        <div class="card-arrow">&#8599;</div>
+      </a>
+
+      <a class="nav-card" onclick="navTo('https://www.notion.so/37311eceab5f81209316ff1da781ddef')" style="--card-accent: rgba(245,158,11,0.06); --card-icon-bg: rgba(245,158,11,0.08); --card-icon-border: rgba(245,158,11,0.15);">
+        <div class="card-inner">
+          <div class="card-icon">&#9888;&#65039;</div>
+          <div class="card-num">Page 03</div>
+          <div class="card-title">Challenges, Ethics &amp; Future</div>
+          <div class="card-desc">
+            Bias, misinformation, privacy, global regulation landscape,
+            and what the future holds for AI in the Web 3.0 era.
+          </div>
+        </div>
+        <div class="card-arrow">&#8599;</div>
+      </a>
+
+      <a class="nav-card" onclick="navTo('https://www.notion.so/37311eceab5f81399177c3c22948df6a')" style="--card-accent: rgba(236,72,153,0.06); --card-icon-bg: rgba(236,72,153,0.08); --card-icon-border: rgba(236,72,153,0.15);">
+        <div class="card-inner">
+          <div class="card-icon">&#128736;&#65039;</div>
+          <div class="card-num">Page 04</div>
+          <div class="card-title">AI Tools &amp; Platforms Guide</div>
+          <div class="card-desc">
+            Hands-on guide to ChatGPT, Midjourney, GitHub Copilot and more —
+            with practical advice on choosing &amp; getting started.
+          </div>
+        </div>
+        <div class="card-arrow">&#8599;</div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section">
+    <div class="section-label">Our Team</div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">T</div>
+        <div class="team-name">Tao Ran</div>
+        <div class="team-role">Wiki Manager</div>
+        <div class="team-page">Page 01</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #22c55e, #16a34a);">W</div>
+        <div class="team-name">Weichen Zhang</div>
+        <div class="team-role">Slack Admin</div>
+        <div class="team-page">Page 02</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #f59e0b, #d97706);">Y</div>
+        <div class="team-name">Yunzhe Cai</div>
+        <div class="team-role">User Guide Mgr</div>
+        <div class="team-page">Page 04</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg, #ec4899, #db2777);">C</div>
+        <div class="team-name">Changda Han</div>
+        <div class="team-role">Info Security</div>
+        <div class="team-page">Page 03</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="about-section">
+    <div class="section-label">About This Project</div>
+    <div class="about-box">
+      <p>
+        This wiki was developed as part of the <strong>Assessment 3 Group Project</strong> for VIT1103
+        at Victoria University. Our goal is to provide a comprehensive, well-designed resource that
+        introduces AI and Generative AI technologies to a broad audience — highlighting both
+        the opportunities and challenges of this rapidly evolving field.
+      </p>
+      <div class="about-meta">
+        <div class="meta-item">
+          <div class="meta-icon">&#128218;</div>
+          <span>VIT1103 Communication &amp; Information Management</span>
+        </div>
+        <div class="meta-item">
+          <div class="meta-icon">&#127963;</div>
+          <span>Victoria University</span>
+        </div>
+        <div class="meta-item">
+          <div class="meta-icon">&#128197;</div>
+          <span>June 2026</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ── Navigation handler ──
+// Uses three fallback strategies to escape iframe restrictions:
+// 1. window.open (works if iframe allows popups)
+// 2. top.location (works if iframe allows top-navigation)
+// 3. Direct location change (works if page is not in iframe)
+function navTo(url) {
+  try {
+    // If inside an iframe, try opening a new tab first
+    if (window.self !== window.top) {
+      var w = window.open(url, '_blank');
+      if (!w) {
+        // Popup blocked — navigate the top frame instead
+        window.top.location.href = url;
+      }
+    } else {
+      // Not in an iframe — open in new tab
+      window.open(url, '_blank');
+    }
+  } catch (e) {
+    // Cross-origin restriction — fallback to direct navigation
+    window.location.href = url;
+  }
+}
+
+// ── Floating particles (light-themed) ──
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+let w, h, particles = [];
+
+function resize() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+class Particle {
+  constructor() { this.reset(); }
+  reset() {
+    this.x = Math.random() * w;
+    this.y = Math.random() * h;
+    this.vx = (Math.random() - 0.5) * 0.25;
+    this.vy = (Math.random() - 0.5) * 0.25;
+    this.r = Math.random() * 2 + 0.8;
+    this.alpha = Math.random() * 0.15 + 0.05;
+  }
+  update() {
+    this.x += this.vx;
+    this.y += this.vy;
+    if (this.x < 0 || this.x > w || this.y < 0 || this.y > h) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(99, 102, 241, ${this.alpha})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 50; i++) particles.push(new Particle());
+
+function animate() {
+  ctx.clearRect(0, 0, w, h);
+  particles.forEach(p => { p.update(); p.draw(); });
+
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i + 1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < 140) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(99, 102, 241, ${0.04 * (1 - dist / 140)})`;
+        ctx.lineWidth = 0.6;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>
